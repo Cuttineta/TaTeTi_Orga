@@ -42,6 +42,7 @@ tElemento l_recuperar(tLista l, tPosicion p){
         exit(LST_POSICION_INVALIDA);
     return p->siguiente->elemento;
 }
+
 /**
  Recupera y retorna la primera posicion de L.
  Si L es vacia, primera(L) = ultima(L) = fin(L).
