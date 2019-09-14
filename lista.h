@@ -16,10 +16,10 @@ typedef struct celda * tLista;
 typedef struct celda * tPosicion;
 typedef void * tElemento;
 
-/*
+/**
  Inicializa una lista vacia.
  Una referencia a la lista creada es referenciada en *L.
-*/
+**/
 extern void crear_lista(tLista * l);
 
 /**

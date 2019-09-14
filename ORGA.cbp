@@ -33,6 +33,7 @@
 		</Compiler>
 		<Unit filename="lista.c">
 			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="lista.h">
 			<Option target="&lt;{~None~}&gt;" />
