@@ -30,4 +30,57 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
     nuevo->elemento= e;
     p->siguiente= nuevo;
 }
+/**
+ Recupera y retorna el elemento en la posicion P.
+ Si P es fin(L), finaliza indicando LST_POSICION_INVALIDA.
+**/
+tElemento l_recuperar(tLista l, tPosicion p){
+    if(p==NULL)
+        exit(LST_POSICION_INVALIDA);
+    return p->siguiente->elemento;
+}
+/**
+ Recupera y retorna la primera posicion de L.
+ Si L es vacia, primera(L) = ultima(L) = fin(L).
+**/
+ tPosicion l_primera(tLista l){
+     return l;
+ }
+
+/**
+ Recupera y retorna la posicion siguiente a P en L.
+ Si P es fin(L), finaliza indicando LST_NO_EXISTE_SIGUIENTE.
+**/
+ tPosicion l_siguiente(tLista l, tPosicion p){
+    if((p->siguiente)==NULL){
+        exit(LST_NO_EXISTE_SIGUIENTE);
+    }
+    return (p->siguiente);}
+
+/**
+ Recupera y retorna la posicion anterior a P en L.
+ Si P es primera(L), finaliza indicando LST_NO_EXISTE_ANTERIOR.
+**/
+ tPosicion l_anterior(tLista l, tPosicion p){
+     if(p == l)
+        exit(LST_NO_EXISTE_ANTERIOR);
+    tPosicion aux=l;
+
+    while(aux!=p&&aux->siguiente!=NULL)
+        aux=aux->siguiente;
+
+    return aux;
+ }
+
+ /**
+ Recupera y retorna la ultima posicion de L.
+ Si L es vacia, primera(L) = ultima(L) = fin(L).
+**/
+ tPosicion l_ultima(tLista l);
+
+ /**
+ Recupera y retorna la posicion fin de L.
+ Si L es vacia, primera(L) = ultima(L) = fin(L).
+**/
+ tPosicion l_fin(tLista l);
 
