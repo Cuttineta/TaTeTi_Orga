@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "lista.h"
 
 
@@ -15,6 +14,7 @@ void crear_lista(tLista * l) {
     }
     (*l)->siguiente= NULL;
     (*l)->elemento= NULL;
+    printf("Lista creada padre\n");
 }
 
 /**
@@ -32,6 +32,8 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
     nuevo->siguiente= p->siguiente;
     nuevo->elemento= e;
     p->siguiente= nuevo;
+
+    printf("Insertado \n");
 }
 /**
  Elimina el nodo que se encuentra en la posicion P de L.
@@ -51,6 +53,7 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
 tElemento l_recuperar(tLista l, tPosicion p){
     if(p==NULL)
         exit(LST_POSICION_INVALIDA);
+    printf("Recuperar \n");
     return p->siguiente->elemento;
 }
 
@@ -59,6 +62,7 @@ tElemento l_recuperar(tLista l, tPosicion p){
  Si L es vacia, primera(L) = ultima(L) = fin(L).
 **/
  tPosicion l_primera(tLista l){
+     printf("Primera bro \n");
      return l;
  }
 
@@ -91,10 +95,21 @@ tElemento l_recuperar(tLista l, tPosicion p){
  Recupera y retorna la ultima posicion de L.
  Si L es vacia, primera(L) = ultima(L) = fin(L).
 **/
- tPosicion l_ultima(tLista l);
+ tPosicion l_ultima(tLista l){
+     tPosicion aux=l;
+     while(aux->siguiente->siguiente!=NULL)
+        aux= aux->siguiente;
+
+     return aux;
+ }
 
  /**
  Recupera y retorna la posicion fin de L.
  Si L es vacia, primera(L) = ultima(L) = fin(L).
 **/
- tPosicion l_fin(tLista l);
+ tPosicion l_fin(tLista l){
+  tPosicion aux=l;
+     while(aux->siguiente!=NULL)
+        aux= aux->siguiente;
+
+     return aux;}
