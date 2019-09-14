@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "lista.h"
 
 
@@ -90,10 +89,21 @@ tElemento l_recuperar(tLista l, tPosicion p){
  Recupera y retorna la ultima posicion de L.
  Si L es vacia, primera(L) = ultima(L) = fin(L).
 **/
- tPosicion l_ultima(tLista l);
+ tPosicion l_ultima(tLista l){
+     tPosicion aux=l;
+     while(aux->siguiente->siguiente!=NULL)
+        aux= aux->siguiente;
+
+     return aux;
+ }
 
  /**
  Recupera y retorna la posicion fin de L.
  Si L es vacia, primera(L) = ultima(L) = fin(L).
 **/
- tPosicion l_fin(tLista l);
+ tPosicion l_fin(tLista l){
+  tPosicion aux=l;
+     while(aux->siguiente!=NULL)
+        aux= aux->siguiente;
+
+     return aux;}
