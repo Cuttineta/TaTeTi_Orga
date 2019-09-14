@@ -31,11 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Tester.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="lista.h">
 			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
 			<code_completion />
