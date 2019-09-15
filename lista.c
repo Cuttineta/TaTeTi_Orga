@@ -41,7 +41,9 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
  El elemento almacenado en la posicion P es eliminado mediante la funcion fEliminar parametrizada.
  Si P es fin(L), finaliza indicando LST_POSICION_INVALIDA.
 **/
- void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento));
+ void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)) {
+
+ }
 
 /**
  Destruye la lista L, elimininando cada una de sus posiciones. Los elementos almacenados en las posiciones son eliminados mediante la funcion fEliminar parametrizada.
