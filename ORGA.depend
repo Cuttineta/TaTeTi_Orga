@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1568487014 source:/home/jacttis/TaTeTi_Orga/tester.c
+1568505627 source:/home/jacttis/TaTeTi_Orga/tester.c
 	<stdio.h>
 	<stdlib.h>
+	"lista.h"
 
 1568505127 source:c:\users\joaco\onedrive\documentos\github\tateti_orga\tester.c
 	<stdio.h>
@@ -9,4 +10,6 @@
 	"lista.h"
 
 1568504177 c:\users\joaco\onedrive\documentos\github\tateti_orga\lista.h
+
+1568501360 /home/jacttis/TaTeTi_Orga/lista.h
 

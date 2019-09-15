@@ -10,7 +10,7 @@
 **/
 void crear_lista(tLista * l) {
     *l= (tLista)malloc(sizeof(struct celda));
-    if(!(*l)){
+    if((*l)==NULL){
         exit(LST_ERROR_MEMORIA);
     }
 
@@ -27,7 +27,7 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
     tPosicion nuevo;
 
     nuevo=(tPosicion)malloc(sizeof(struct celda));
-    if(!nuevo){
+    if(nuevo==NULL){
         exit(LST_ERROR_MEMORIA);
     }
 
@@ -55,7 +55,7 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
 tElemento l_recuperar(tLista l, tPosicion p){
     if(p==NULL)
         exit(LST_POSICION_INVALIDA);
-    printf("Recuperar \n");
+
     return p->siguiente->elemento;
 }
 
@@ -85,10 +85,14 @@ tPosicion l_siguiente(tLista l, tPosicion p){
 tPosicion l_anterior(tLista l, tPosicion p){
      if(p == l)
         exit(LST_NO_EXISTE_ANTERIOR);
-    tPosicion aux=l;
 
-    while(aux!=p&&aux->siguiente!=NULL)
-        aux=aux->siguiente;
+    tPosicion aux= l;
+
+    while((aux->siguiente)!=p && (aux->siguiente)!=NULL)
+        aux= aux->siguiente;
+
+    if(aux->siguiente==NULL)
+        exit(LST_NO_EXISTE_ANTERIOR);
 
     return aux;
 }
