@@ -3,6 +3,8 @@
 
 #include "lista.h"
 
+
+
 int main()
 {
     tLista l;
