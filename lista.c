@@ -59,7 +59,21 @@ void l_insertar(tLista l, tPosicion p, tElemento e) {
 /**
  Destruye la lista L, elimininando cada una de sus posiciones. Los elementos almacenados en las posiciones son eliminados mediante la funcion fEliminar parametrizada.
 **/
- void l_destruir(tLista * l, void (*fEliminar)(tElemento));
+ void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
+
+    tPosicion aux=l;
+    while(aux->siguiente!=NULL){
+        tPosicion aEliminar= aux->siguiente;
+        fEliminar(aEliminar->elemento);
+        aux->siguiente=aEliminar->siguiente;
+        aEliminar->siguiente=NULL;
+        free(aEliminar);
+        aEliminar=NULL;
+        aux=aux->siguiente;
+    }
+    free(l);
+ }
+
 
 /**
  Recupera y retorna el elemento en la posicion P.
