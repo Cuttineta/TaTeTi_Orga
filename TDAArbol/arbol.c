@@ -43,9 +43,7 @@ void crear_raiz(tArbol a, tElemento e){
  Si NH no corresponde a un nodo hijo de NP, finaliza indicando ARB_POSICION_INVALIDA.
  NP direcciona al nodo padre, mientras NH al nodo hermano derecho del nuevo nodo a insertar.
 **/
-tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
-
-}
+tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e);
 
 /**
  Elimina el nodo N de A.
@@ -54,7 +52,45 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
  Si N es la raiz de A, y a su vez tiene mas de un hijo, finaliza retornando ARB_OPERACION_INVALIDA.
  Si N no es la raiz de A y tiene hijos, estos pasan a ser hijos del padre de N, en el mismo orden y a partir de la posicion que ocupa N en la lista de hijos de su padre.
 **/
-void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento));
+void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
+
+    tPosicion primera;//primer hijo de N
+    tPosicion ultima;//ultimo hijo de N
+    tPosicion posN;//posicion de N en la lista de hijos de su padre
+    tPosicion act;//posicion auxiliar para recorrer los hijos de N y luego insertar en la lista de hijos de su padre
+    tLista hijosPadre;
+
+    if(a==NULL||n==NULL){
+        exit(ARB_OPERACION_INVALIDA);
+    }
+
+    primera= l_primera(n->hijos);
+    ultima= l_ultima(n->hijos);
+
+    if(a->raiz==n){
+            if(primera==ultima){
+            a->raiz= l_recuperar(n->hijos,primera);
+            fEliminar(a->raiz->padre->elemento);
+            a->raiz->padre=NULL;
+            free(a->raiz->padre);
+        }
+        else
+            exit(ARB_OPERACION_INVALIDA);
+    }
+    else{
+        hijosPadre= n->padre->hijos;
+        posN=l_primera(hijosPadre);
+        while(posN!=NULL&&posN->elemento!=n){
+            posN= posN->siguiente;
+        }
+        act=primera;
+        while(act!=NULL){
+            l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));
+            act=act->siguiente;
+        }
+        l_eliminar(hijosPadre,posN,fEliminar);
+    }
+}
 
 /**
  Destruye el arbol A, eliminando cada uno de sus nodos.
@@ -65,17 +101,32 @@ void a_destruir(tArbol * a, void (*fEliminar)(tElemento));
 /**
 Recupera y retorna el elemento del nodo N.
 */
-tElemento a_recuperar(tArbol a, tNodo n);
+tElemento a_recuperar(tArbol a, tNodo n){
+    if(n==NULL)
+        exit(ARB_POSICION_INVALIDA);
+
+    return n->elemento;
+}
 
 /**
 Recupera y retorna el nodo correspondiente a la raiz de A.
 **/
-tNodo a_raiz(tArbol a);
+tNodo a_raiz(tArbol a){
+    if(a->raiz==NULL){
+        exit(ARB_OPERACION_INVALIDA);
+    }
+    return a->raiz;
+}
 
 /**
  Obtiene y retorna una lista con los nodos hijos de N en A.
 **/
-tLista a_hijos(tArbol a, tNodo n);
+tLista a_hijos(tArbol a, tNodo n){
+    if(n==NULL){
+        exit(ARB_POSICION_INVALIDA);
+    }
+    return n->hijos;
+}
 
 /**
  Inicializa un nuevo arbol en *SA.
