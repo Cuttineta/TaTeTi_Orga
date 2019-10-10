@@ -209,4 +209,41 @@ tLista a_hijos(tArbol a, tNodo n){
  El nuevo arbol en *SA se compone de los nodos del subarbol de A a partir de N.
  El subarbol de A a partir de N debe ser eliminado de A.
 **/
-void a_sub_arbol(tArbol a, tNodo n, tArbol * sa);
+void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
+    tPosicion actual, ultima;
+    tNodo padre;
+    int es;
+    if(a==NULL||n==NULL||sa==NULL){
+        exit(ARB_POSICION_INVALIDA);
+        }
+    crear_arbol(sa);
+
+    if(a->raiz!=n){
+        crear_raiz(*sa,n);
+        padre=n->padre;
+        if(padre->hijos==NULL){
+            exit(ARB_POSICION_INVALIDA);
+        }
+        actual=l_primera(padre->hijos);
+        ultima=l_fin(padre->hijos);
+        es=0;
+
+        while(!es&&actual!=ultima){
+                es=l_recuperar(padre->hijos,actual)==n;
+                if(!es)
+                    actual= actual->siguiente==ultima?NULL:actual->siguiente;
+        }
+        if(!es)
+            exit(ARB_POSICION_INVALIDA);
+        l_eliminar(padre->hijos,actual,eliminarElem);
+
+        if(l_primera(padre->hijos)==l_fin(padre->hijos)){
+            l_destruir(&(padre->hijos),eliminarElem);
+            padre->hijos=NULL;
+        }
+    }else{
+        crear_raiz(*sa,n);
+        a->raiz=NULL;
+    }
+
+}
