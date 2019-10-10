@@ -78,7 +78,7 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
     nuevo->elemento= e;
     crear_lista( &(nuevo->hijos) );
     nuevo->padre= np;
-    l_insertar(hermanos, posInsertar, nuevo)
+    l_insertar(hermanos, posInsertar, nuevo);
 
     return nuevo;
 }
@@ -117,24 +117,50 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     }
     else{
         hijosPadre= n->padre->hijos;
-        posN=l_primera(hijosPadre);
+        posN= l_primera(hijosPadre);
         while(posN!=NULL&&posN->elemento!=n){
             posN= posN->siguiente;
         }
-        act=primera;
+        act= primera;
         while(act!=NULL){
             l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));
-            act=act->siguiente;
+            act= act->siguiente;
         }
         l_eliminar(hijosPadre,posN,fEliminar);
     }
 }
 
 /**
+ Destruye el arbol A utilizando un recorrido en postOrder invertido.
+ @param tElemento elem -> hace referencia al nodo actual del recorrido el cual va a ser eliminado.
+**/
+void a_destruirAux(tElemento elem){
+    if(elem!=NULL){
+        tNodo nodoElim= elem;
+
+        nodoElim->padre= NULL;
+        eliminarElem(nodoElim->elemento);
+        l_destruir(&(nodoElim->hijos), &a_destruirAux);
+        nodoElim->hijos= NULL;
+        free(nodoElim);
+        elem=NULL;
+    }
+
+}
+
+/**
  Destruye el arbol A, eliminando cada uno de sus nodos.
  Los elementos almacenados en el arbol son eliminados mediante la funcion fEliminar parametrizada.
 **/
-void a_destruir(tArbol * a, void (*fEliminar)(tElemento));
+void a_destruir(tArbol * a, void (*fEliminar)(tElemento)) {
+    eliminarElem= fEliminar;
+    tNodo nActual= (*a)->raiz;
+    if(nActual!=NULL){
+        a_destruirAux(nActual);
+    }
+    free(*a);
+    (*a)= NULL;
+}
 
 /**
 Recupera y retorna el elemento del nodo N.
