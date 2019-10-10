@@ -43,7 +43,45 @@ void crear_raiz(tArbol a, tElemento e){
  Si NH no corresponde a un nodo hijo de NP, finaliza indicando ARB_POSICION_INVALIDA.
  NP direcciona al nodo padre, mientras NH al nodo hermano derecho del nuevo nodo a insertar.
 **/
-tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e);
+tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
+    if(np==NULL){
+        exit(ARB_POSICION_INVALIDA);
+    }
+
+    tLista hermanos= np->hijos;
+    tPosicion posInsertar= NULL;
+    tNodo nuevo= (tNodo) malloc(sizeof(struct nodo));
+    if(nuevo==NULL){
+        exit(ARB_ERROR_MEMORIA);
+    }
+
+    if(nh!=NULL && l_primera(hermanos)==l_fin(hermanos)){//Si NH no es nulo y NP no posee hijos
+        exit(ARB_POSICION_INVALIDA);
+    }
+
+    if(nh==NULL || l_primera(hermanos)==l_fin(hermanos)){//Si NH es nulo o si NP no posee hijos
+        posInsertar= l_fin(hermanos);
+    }
+    else {//NP posee hijos y NH es distinto de nulo
+        tPosicion it= l_primera(hermanos);
+
+        while(l_recuperar(hermanos, it)!=nh && it!=l_fin(hermanos)){//Mientras no haya encontrado a nh y no haya visitado todos los hijos
+            it= l_siguiente(hermanos, it);
+        }
+        if(it==l_fin(hermanos)){
+            exit(ARB_POSICION_INVALIDA);//NH no corresponde a un hijo de NP
+        }
+
+        posInsertar= it;
+    }
+
+    nuevo->elemento= e;
+    crear_lista( &(nuevo->hijos) );
+    nuevo->padre= np;
+    l_insertar(hermanos, posInsertar, nuevo);
+
+    return nuevo;
+}
 
 /**
  Elimina el nodo N de A.
@@ -89,24 +127,50 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     }
     else{
         hijosPadre= n->padre->hijos;
-        posN=l_primera(hijosPadre);
+        posN= l_primera(hijosPadre);
         while(posN!=NULL&&posN->elemento!=n){
             posN= posN->siguiente;
         }
-        act=primera;
+        act= primera;
         while(act!=NULL){
             l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));
-            act=act->siguiente;
+            act= act->siguiente;
         }
         l_eliminar(hijosPadre,posN,fEliminar);
     }
 }
 
 /**
+ Destruye el arbol A utilizando un recorrido en postOrder invertido.
+ @param tElemento elem -> hace referencia al nodo actual del recorrido el cual va a ser eliminado.
+**/
+void a_destruirAux(tElemento elem){
+    if(elem!=NULL){
+        tNodo nodoElim= elem;
+
+        nodoElim->padre= NULL;
+        eliminarElem(nodoElim->elemento);
+        l_destruir(&(nodoElim->hijos), &a_destruirAux);
+        nodoElim->hijos= NULL;
+        free(nodoElim);
+        elem=NULL;
+    }
+
+}
+
+/**
  Destruye el arbol A, eliminando cada uno de sus nodos.
  Los elementos almacenados en el arbol son eliminados mediante la funcion fEliminar parametrizada.
 **/
-void a_destruir(tArbol * a, void (*fEliminar)(tElemento));
+void a_destruir(tArbol * a, void (*fEliminar)(tElemento)) {
+    eliminarElem= fEliminar;
+    tNodo nActual= (*a)->raiz;
+    if(nActual!=NULL){
+        a_destruirAux(nActual);
+    }
+    free(*a);
+    (*a)= NULL;
+}
 
 /**
 Recupera y retorna el elemento del nodo N.

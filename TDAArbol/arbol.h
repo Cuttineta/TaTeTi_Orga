@@ -20,6 +20,8 @@ struct arbol{
 typedef struct nodo * tNodo;
 typedef struct arbol * tArbol;
 
+void (*eliminarElem)(tElemento);//Variable global que referenciara a la funcion que elimina los elementos contenidos por el nodo
+
 
 /**
 Inicializa un arbol vacio.
