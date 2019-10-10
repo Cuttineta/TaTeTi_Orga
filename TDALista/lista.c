@@ -54,7 +54,7 @@ extern void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)){
     free(aEliminar);
  }
 
- void l_destruirAux(tPosicion aux,void (*fEliminar)(tElemento)){
+ void l_destruirAux(tPosicion aux, void (*fEliminar)(tElemento)){
     if(aux->siguiente==NULL){
         fEliminar(aux->elemento);
         free(aux);
@@ -73,7 +73,12 @@ extern void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)){
 **/
  void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
     tPosicion aux= *l;
-    l_destruirAux(aux,fEliminar);
+    if(aux->elemento!=NULL){//Si la lista no esta vacia
+        l_destruirAux(aux,fEliminar);
+    }
+    else{
+        free(aux);
+    }
     (*l)=NULL;
  }
 
