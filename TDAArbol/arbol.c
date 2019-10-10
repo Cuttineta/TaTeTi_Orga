@@ -86,6 +86,24 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
 }
 
 /**
+ Se simula la eliminacion del nodo, en este, se le re-asigna al nodo padre de n por su abuelo,
+ de esta forma causando el desreferenciamiento del mismo con su anterior padre.
+**/
+void fEliminarNodo(tElemento n){
+    tNodo nElim=(tNodo) n;
+    (nElim->padre)= (nElim->padre)->padre;//Al nodo a eliminar le asigno como padre a su abuelo
+}
+
+/**
+ Se simula la eliminacion del nodo, en este se anula la asignacion al nodo padre del mismo,
+ de esta forma causando el desreferenciamiento del mismo sobre el arbol.
+**/
+void fEliminarNodoSuperficial(tElemento e){
+    tNodo nElim=(tNodo) e;
+    nElim->padre= NULL;//De esta manera simulo que es el nodo raiz.
+}
+
+/**
  Elimina el nodo N de A.
  El elemento almacenado en el arbol es eliminado mediante la funcion fEliminar parametrizada.
  Si N es la raiz de A, y tiene un solo hijo, este pasa a ser la nueva raiz del arbol.
@@ -97,49 +115,73 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     tPosicion primera;//primer hijo de N
     tPosicion ultima;//ultimo hijo de N
     tPosicion posN;//posicion de N en la lista de hijos de su padre
-    tPosicion act;//posicion auxiliar para recorrer los hijos de N y luego insertar en la lista de hijos de su padre
-    tLista hijosPadre;
+    tPosicion posInsertar;//Posicion donde se van a insertar los hijos de n
+    tPosicion posActual;//posicion auxiliar para recorrer los hijos de N y luego insertar en la lista de hijos de su padre
+    tLista hermanos;
+    tLista hijosN;
+    tNodo padreN;
+    tNodo nodoActual;
 
     if(a==NULL||n==NULL){
         exit(ARB_OPERACION_INVALIDA);
     }
+    hijosN= n->hijos;
+    primera= l_primera(hijosN);
+    ultima= l_ultima(hijosN);
 
-    primera= l_primera(n->hijos);
-    ultima= l_ultima(n->hijos);
+    if(a->raiz==n){//Si hay que eliminar la raiz
+            if( primera==(l_fin(hijosN)) ){//si la raiz no posee hijos
+                    fEliminar(n->elemento);
+                    l_destruir(&(hijosN), fEliminarNodoSuperficial);
+                    free(n);
+            }else{//Si la raiz posee hijos
+                if(primera==ultima){//Si posee un solo hijo
 
-    if(a->raiz==n){
-            if(a->raiz->hijos==NULL){//->Nunca esta null, simpre que se inserta un elemento se inicializa su lista vacia.<-
-                    fEliminar(a->raiz->elemento);
-                    free(a->raiz);
-            }else{
-                if(primera==ultima){
-                    hijosPadre= a->raiz->hijos;
-                    a->raiz->hijos= n->hijos;
-                    a->raiz->elemento= n->elemento;
-                    fEliminar(a->raiz->padre->elemento);
-                    l_destruir(&hijosPadre,fEliminar);
-                    a->raiz->padre=NULL;
-                    free(a->raiz->padre);
+                    tNodo nHijoUnico= l_recuperar(hijosN, primera);
+                    a->raiz= nHijoUnico;
+                    fEliminar(n->elemento);
+                    l_eliminar(hijosN, primera, fEliminarNodoSuperficial);
+                    l_destruir(&hijosN, fEliminarNodoSuperficial);
+                    free(n);
 
-                } else{
+                } else{//Si posee mas de un hijo
                     exit(ARB_OPERACION_INVALIDA);
                 }
 
             }
 
     }
-    else{
-        hijosPadre= n->padre->hijos;
-        posN= l_primera(hijosPadre);
-        while(posN!=NULL && (posN->elemento)!=n){
-            posN= posN->siguiente;
+    else{//Si el nodo a eliminar no es la raiz del arbol
+        padreN= n->padre;
+        hermanos= padreN->hijos;
+        posN= l_primera(hermanos);
+        while(posN!=l_fin(hermanos) && l_recuperar(hermanos, posN)!=n){
+            posN= l_siguiente(hermanos, posN);
         }
-        act= primera;
-        while(act!=NULL){
-            l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));//Se ingresan en la posN y al hacer esto los hijos de n se ingresan en orden invertido
-            act= act->siguiente;
+        if(posN==l_fin(hermanos)){//Si no se encontro a n en la lista
+            exit(ARB_POSICION_INVALIDA);//Arbol corrupto, el nodo n no se encuentra como hijo de su padre.
         }
-        l_eliminar(hijosPadre,posN,fEliminar);//La funcion fEliminar elimina el ELEMENTO DEL NODO, el l_eliminar necesita una funcion que elimine NODOS PALURDO
+        posInsertar= l_siguiente(hermanos, posN);
+
+        posActual= ultima;
+        while(posActual!= l_primera(hijosN)){//Si N tiene hijos
+           nodoActual= l_recuperar(hijosN, posActual);
+           l_eliminar(hijosN, posActual, fEliminarNodo);
+           l_insertar(hermanos, posInsertar, nodoActual);
+
+           posActual= l_anterior(hijosN, posActual);
+        }
+        if(l_recuperar(hijosN, posActual)!=NULL){//Necesario para eliminar el ultimo hijo restante de N
+           nodoActual= l_recuperar(hijosN, posActual);
+           l_eliminar(hijosN, posActual, fEliminarNodo);
+           l_insertar(hermanos, posInsertar, nodoActual);
+        }
+
+        l_destruir(&hijosN, fEliminarNodo);
+        fEliminar(n->elemento);
+        l_eliminar(hermanos, posN, fEliminarNodoSuperficial);
+        free(n);
+
     }
 }
 
@@ -206,14 +248,6 @@ tLista a_hijos(tArbol a, tNodo n){
 }
 
 /**
- Metodo a utilizarse para eliminar un nodo en el metodo a_sub_arbol.
-**/
-void fEliminarSubArbol(tElemento e){
-    tNodo nElim=(tNodo) e;
-    nElim->padre= NULL;//De esta manera simulo que es el nodo raiz.
-}
-
-/**
  Inicializa un nuevo arbol en *SA.
  El nuevo arbol en *SA se compone de los nodos del subarbol de A a partir de N.
  El subarbol de A a partir de N debe ser eliminado de A.
@@ -246,7 +280,7 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
             exit(ARB_POSICION_INVALIDA);
 
         //Una vez eliminado el nodo de la lista de hijos del padre, todo descendiente del mismo se ve desprendido del arbol a
-        l_eliminar(padre->hijos,actual,fEliminarSubArbol);
+        l_eliminar(padre->hijos,actual,fEliminarNodoSuperficial);
 
     }else{
         (*sa)->raiz= n;
