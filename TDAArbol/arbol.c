@@ -3,6 +3,8 @@
 
 #include "arbol.h"
 
+void (*eliminarElem)(tElemento);//Variable global que referenciara a la funcion que elimina los elementos contenidos por el nodo
+
 /**
 Inicializa un arbol vacio.
 Una referencia al arbol creado es referenciado en *A.
