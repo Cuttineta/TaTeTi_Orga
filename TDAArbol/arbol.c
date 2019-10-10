@@ -205,6 +205,14 @@ tLista a_hijos(tArbol a, tNodo n){
 }
 
 /**
+ Metodo a utilizarse para eliminar un nodo en el metodo a_sub_arbol.
+**/
+void fEliminarSubArbol(tElemento e){
+    tNodo nElim=(tNodo) e;
+    nElim->padre= NULL;//De esta manera simulo que es el nodo raiz.
+}
+
+/**
  Inicializa un nuevo arbol en *SA.
  El nuevo arbol en *SA se compone de los nodos del subarbol de A a partir de N.
  El subarbol de A a partir de N debe ser eliminado de A.
@@ -215,35 +223,33 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     int es;
     if(a==NULL||n==NULL||sa==NULL){
         exit(ARB_POSICION_INVALIDA);
-        }
+    }
     crear_arbol(sa);
 
     if(a->raiz!=n){
-        crear_raiz(*sa,n);
-        padre=n->padre;
-        if(padre->hijos==NULL){
+        (*sa)->raiz= n;
+        padre= n->padre;
+        if(padre->hijos==NULL){//Arbol corrupto
             exit(ARB_POSICION_INVALIDA);
         }
-        actual=l_primera(padre->hijos);
-        ultima=l_fin(padre->hijos);
-        es=0;
+        actual= l_primera(padre->hijos);
+        ultima= l_fin(padre->hijos);
+        es= 0;//Flag para indicar si se encontro la posicion del tNodo n en la lista de hijos del padre
 
-        while(!es&&actual!=ultima){
-                es=l_recuperar(padre->hijos,actual)==n;
+        while(!es && actual!=ultima){//While para encontrar la posicion de lista de n
+                es= l_recuperar(padre->hijos,actual)==n;
                 if(!es)
-                    actual= actual->siguiente==ultima?NULL:actual->siguiente;
+                    actual= (actual->siguiente==ultima) ? (NULL) : (actual->siguiente);
         }
         if(!es)
             exit(ARB_POSICION_INVALIDA);
-        l_eliminar(padre->hijos,actual,eliminarElem);
 
-        if(l_primera(padre->hijos)==l_fin(padre->hijos)){
-            l_destruir(&(padre->hijos),eliminarElem);
-            padre->hijos=NULL;
-        }
+        //Una vez eliminado el nodo de la lista de hijos del padre, todo descendiente del mismo se ve desprendido del arbol a
+        l_eliminar(padre->hijos,actual,fEliminarSubArbol);
+
     }else{
-        crear_raiz(*sa,n);
-        a->raiz=NULL;
+        (*sa)->raiz= n;
+        a->raiz= NULL;
     }
 
 }
