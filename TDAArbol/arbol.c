@@ -108,7 +108,7 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     ultima= l_ultima(n->hijos);
 
     if(a->raiz==n){
-            if(a->raiz->hijos==NULL){
+            if(a->raiz->hijos==NULL){//->Nunca esta null, simpre que se inserta un elemento se inicializa su lista vacia.<-
                     fEliminar(a->raiz->elemento);
                     free(a->raiz);
             }else{
@@ -121,24 +121,25 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
                     a->raiz->padre=NULL;
                     free(a->raiz->padre);
 
-            } else
-            exit(ARB_OPERACION_INVALIDA);
+                } else{
+                    exit(ARB_OPERACION_INVALIDA);
+                }
 
-        }
+            }
 
     }
     else{
         hijosPadre= n->padre->hijos;
         posN= l_primera(hijosPadre);
-        while(posN!=NULL&&posN->elemento!=n){
+        while(posN!=NULL && (posN->elemento)!=n){
             posN= posN->siguiente;
         }
         act= primera;
         while(act!=NULL){
-            l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));
+            l_insertar(hijosPadre,posN,l_recuperar(n->hijos,act));//Se ingresan en la posN y al hacer esto los hijos de n se ingresan en orden invertido
             act= act->siguiente;
         }
-        l_eliminar(hijosPadre,posN,fEliminar);
+        l_eliminar(hijosPadre,posN,fEliminar);//La funcion fEliminar elimina el ELEMENTO DEL NODO, el l_eliminar necesita una funcion que elimine NODOS PALURDO
     }
 }
 
