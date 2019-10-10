@@ -34,7 +34,7 @@ void crear_raiz(tArbol a, tElemento e){
 
     rootA->padre= NULL;
     rootA->elemento= e;
-    crear_lista( &(rootA->hijos) );
+    crear_lista(&rootA->hijos);
     a->raiz= rootA;
 }
 
@@ -108,14 +108,24 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     ultima= l_ultima(n->hijos);
 
     if(a->raiz==n){
-            if(primera==ultima){
-            a->raiz= l_recuperar(n->hijos,primera);
-            fEliminar(a->raiz->padre->elemento);
-            a->raiz->padre=NULL;
-            free(a->raiz->padre);
-        }
-        else
+            if(a->raiz->hijos==NULL){
+                    fEliminar(a->raiz->elemento);
+                    free(a->raiz);
+            }else{
+                if(primera==ultima){
+                    hijosPadre= a->raiz->hijos;
+                    a->raiz->hijos= n->hijos;
+                    a->raiz->elemento= n->elemento;
+                    fEliminar(a->raiz->padre->elemento);
+                    l_destruir(&hijosPadre,fEliminar);
+                    a->raiz->padre=NULL;
+                    free(a->raiz->padre);
+
+            } else
             exit(ARB_OPERACION_INVALIDA);
+
+        }
+
     }
     else{
         hijosPadre= n->padre->hijos;
