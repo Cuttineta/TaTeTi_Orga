@@ -49,10 +49,10 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
     if(np==NULL){
         exit(ARB_POSICION_INVALIDA);
     }
-
     tLista hermanos= np->hijos;
     tPosicion posInsertar= NULL;
     tNodo nuevo= (tNodo) malloc(sizeof(struct nodo));
+    tPosicion it;
     if(nuevo==NULL){
         exit(ARB_ERROR_MEMORIA);
     }
@@ -65,7 +65,7 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
         posInsertar= l_fin(hermanos);
     }
     else {//NP posee hijos y NH es distinto de nulo
-        tPosicion it= l_primera(hermanos);
+         it= l_primera(hermanos);
 
         while(l_recuperar(hermanos, it)!=nh && it!=l_fin(hermanos)){//Mientras no haya encontrado a nh y no haya visitado todos los hijos
             it= l_siguiente(hermanos, it);
@@ -90,7 +90,8 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
  de esta forma causando el desreferenciamiento del mismo con su anterior padre.
 **/
 void fEliminarNodo(tElemento n){
-    tNodo nElim=(tNodo) n;
+    tNodo nElim;
+    nElim=(tNodo) n;
     (nElim->padre)= (nElim->padre)->padre;//Al nodo a eliminar le asigno como padre a su abuelo
 }
 
@@ -99,7 +100,8 @@ void fEliminarNodo(tElemento n){
  de esta forma causando el desreferenciamiento del mismo sobre el arbol.
 **/
 void fEliminarNodoSuperficial(tElemento e){
-    tNodo nElim=(tNodo) e;
+    tNodo nElim;
+    nElim=(tNodo) e;
     nElim->padre= NULL;//De esta manera simulo que es el nodo raiz.
 }
 
@@ -180,8 +182,6 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
         l_destruir(&hijosN, fEliminarNodo);
         fEliminar(n->elemento);
         l_eliminar(hermanos, posN, fEliminarNodoSuperficial);
-        free(n);
-
     }
 }
 
