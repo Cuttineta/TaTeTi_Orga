@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "partida.h"
+#include <time.h>
+
 
 void inicializar_tablero(char t [][3]){
     int cont= 49;
@@ -40,11 +43,11 @@ int main() {
     char tableroVisual[3][3];
     char nombreJugador1[25];
     char nombreJugador2[25];
-    int movimiento;
-    int mov_x, mov_y;
+    int movimiento, mov_x, mov_y;
+    int orden, comienza;
 
     printf("Bienvenido al juego TATETI.\nModos de juego:\n[1]: Jugador vs Jugador\nLos otros modos de juego seran lanzados en la proxima version.\n");
-    printf("Seleccione un modo de juego: \n");
+    printf("Seleccione un modo de juego: ");
     scanf("%d", &modo_de_juego);
     switch (modo_de_juego){
         case 1: modo_de_juego= PART_MODO_USUARIO_VS_USUARIO;
@@ -56,12 +59,39 @@ int main() {
         default: printf("Opcion incorrecta. Seleccione una de las opciones validas.");
     }
 
-    printf("Ingrese el nombre del jugador 1:\n");
+    printf("Ingrese el nombre del jugador 1: ");
     scanf("%s", nombreJugador1);
-    printf("Ingrese el nombre del jugador 2:\n");
+    printf("Ingrese el nombre del jugador 2: ");
     scanf("%s", nombreJugador2);
 
-    nueva_partida(&partida, modo_de_juego, PART_JUGADOR_1, nombreJugador1, nombreJugador2);
+
+    //AÑADIDO
+    srand(time(NULL));
+    printf("\n¿Quien empieza?\n[1]: %s\n[2]: %s\n[3]: Random\nSeleccione: ",nombreJugador1, nombreJugador2);
+    scanf("%d", &orden);
+
+    while (orden < 1 || orden > 3) {
+        fflush(stdin);
+        printf("Inserte un numero valido.\n[1]: %s\n[2]: %s\n[3]: Random\nSeleccione: ",nombreJugador1, nombreJugador2);
+        scanf("%d", &orden);
+    }
+
+    if (orden == 1){
+        comienza = PART_JUGADOR_1;
+    } else if (orden == 2) {
+        comienza = PART_JUGADOR_2;
+    } else if (orden == 3){
+        comienza = (rand() % 2) == 0?PART_JUGADOR_1:PART_JUGADOR_2;
+
+        if (comienza == PART_JUGADOR_1){
+            printf("Empieza %s\n", nombreJugador1);
+        } else{
+            printf("Empieza %s\n", nombreJugador2);
+        }
+    }
+    //FIN AÑADIDO
+
+    nueva_partida(&partida, modo_de_juego, comienza, nombreJugador1, nombreJugador2);
     inicializar_tablero(tableroVisual);
 
     while(partida->estado==PART_EN_JUEGO) {
@@ -129,15 +159,16 @@ int main() {
     }//Fin bucle juego
 
     if(partida->estado == PART_GANA_JUGADOR_1){
-        printf("%s WINS\nEND GAME\n", partida->nombre_jugador_1);
+        printf("%s WINS\n", partida->nombre_jugador_1);
     }
     else if(partida->estado == PART_GANA_JUGADOR_2){
-        printf("%s WINS\nEND GAME\n", partida->nombre_jugador_2);
+        printf("%s WINS\n", partida->nombre_jugador_2);
     }
     else if(partida->estado == PART_EMPATE){
-        printf("EMPATE\nEND GAME\n");
+        printf("EMPATE\n");
     }
-
+    mostrar_tablero(partida, tableroVisual);
+    printf("END GAME\n");
     finalizar_partida(&partida);
 
 }
