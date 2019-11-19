@@ -4,6 +4,9 @@
 
 #include "partida.h"
 
+//METODOS AUXILIARES
+static void checkearGanador(tPartida p);
+
 /**
 Inicializa una nueva partida, indicando:
  - Modo de partida (Usuario vs. Usuario o Usuario vs. Agente IA).
@@ -44,6 +47,7 @@ void checkearGanador(tPartida p){
     int objetivoJugador1= 1;//Este resultado se dara en el caso de que gane el jugador1
     int objetivoJugador2= 8;//Este resultado se dara en el caso de que gane el jugador2
     int espaciosDisponibles= 0;//Indica si todavia hay espacion disponibles para jugar en el tablero
+    int hayDisponibles= 0;//Flag para indicar si todavia quedan casillas disponibles
     int ganador= 0;//Flag para indicar al ganador
     int estadoPartida= PART_EN_JUEGO;
     tTablero tableroActual= p->tablero;
@@ -65,11 +69,14 @@ void checkearGanador(tPartida p){
         else if(aux_i== objetivoJugador2 || aux_j== objetivoJugador2){//Si gano el jugador 2
             ganador= 2;
         }
-        else if(aux_i==espaciosDisponibles || aux_j==espaciosDisponibles){//Si todavia hay casillas disponibles
+        else if(aux_i==espaciosDisponibles || aux_j==espaciosDisponibles){//Si todavia hay casillas disponibles y es el ulitmo checkeo
             estadoPartida= PART_EN_JUEGO;
+            hayDisponibles= 1;
         }
         else{//Si las filas y columnas estan llenas y ningun jugador gano todavia
-            estadoPartida= PART_EMPATE;
+            if(!hayDisponibles && i==2) {//Si no hay espacios disponibles y es la ultima pasada
+                estadoPartida = PART_EMPATE;
+            }
         }
 
     }
