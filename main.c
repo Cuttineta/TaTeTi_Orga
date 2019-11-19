@@ -140,7 +140,7 @@ int main() {
         movimiento= PART_MOVIMIENTO_ERROR;//Flag que se utilizara para que se realice un movimiento valido
         while (movimiento==PART_MOVIMIENTO_ERROR){
 
-            if(modo_de_juego==PART_MODO_USUARIO_VS_USUARIO || modo_de_juego==PART_MODO_USUARIO_VS_AGENTE_IA && partida->turno_de==PART_JUGADOR_1) {
+            if(modo_de_juego==PART_MODO_USUARIO_VS_USUARIO || (modo_de_juego==PART_MODO_USUARIO_VS_AGENTE_IA && partida->turno_de==PART_JUGADOR_1)) {
                 printf("Seleccione una posicion: ");
                 scanf("%d", &movimiento);
                 switch (movimiento) {
